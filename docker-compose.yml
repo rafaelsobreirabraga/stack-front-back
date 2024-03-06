@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+
+  backend:
+    restart: unless-stopped
+    build:
+      context: . 
+      dockerfile: docker/DockerfileBackEnd
+      args:
+        packages: sqlite3 libsqlite3-dev gcc
+    ports:
+      - "8080:8080"
+    networks:
+      - net-backend
+   
+    volumes:
+      - ./volumes/backend:/app/sqlite
+
+  frontend:
+    depends_on:
+      - backend
+    restart: unless-stopped
+    build: 
+      context: . 
+      dockerfile: docker/DockerfileFrontEnd
+    ports:
+      - "8000:8000"
+    networks:
+      - net-backend
+    environment:
+      - BACKEND_HOST=backend
+      - BACKEND_PORT=8080
+
+#  sqlite3:
+#    image: nouchka/sqlite3:latest
+#    stdin_open: true
+#    tty: true
+#    volumes:
+#      - ./db/:/root/db/
+    
+#web:
+#    build: .
+#    volumes:
+#      - /var/www/volumet:/volume
+#    deploy:
+#      replicas: 3
+#      resources:
+#        limits:
+#          cpus: "0.1"
+#          memory: 50M
+#      restart_policy:
+#        condition: on-failure
+#    ports:
+#      - "4000:5050"
+
+networks:
+  net-backend: 

@@ -1,0 +1,37 @@
+{% extends "index.html" %}
+
+{% block content %}
+<h4>{{ content_title }}</h4>
+
+<div class="row">
+    <form method='POST' action='/' class="col s12">
+      <div class="row">
+        <div class="input-field col s6">
+          <input id="user_id" name="id" type="text" class="validate">
+          <label for="user_id">ID do usuário</label>
+        </div>
+        <div class="input-field col s6">
+          <input id="user_name" name="name" type="text" class="validate">
+          <label for="user_name">Nome do usuário</label>
+        </div>
+        <button class="btn waves-effect waves-light yellow darken-1 black-text right" type="submit" name="action">
+            Enviar
+            <i class="material-icons right">send</i>
+        </button>
+      </div>
+    </form>
+</div>
+<div class="row">
+{% if status_code == 200 %}
+  <div class="card green lighten-4 green-text text-darken-4">
+		<p>Status Code: {{status_code}}, Response: {{ response }}.</p>
+	</div>
+{% else %}
+    {% if status_code %}
+    <div class="card red lighten-4 red-text text-darken-4">
+      <p>Status Code: {{status_code}}.</p>
+    </div>
+    {% endif %}
+{% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "index.html" %}
+
+{% block content %}
+<h4>{{ content_title }}</h4>
+
+{% if status_code == 200 %}
+
+  {% if users %}
+    <input type="hidden" id="delete_user_id" />
+    <table id="data" class="highlight responsive-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>NOME</th>
+          <th>AÇÃO</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+          <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>
+              <i class="tiny material-icons">edit</i>
+              <a href="#modal-delete-user" name="deleteUser" id="{{ user.id }}" class="modal-trigger"><i class="tiny material-icons">delete</i></a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  {% else %}
+    <div class="card green lighten-4 green-text text-darken-4">
+      <p>Nenhum usuário foi encontrado na base de dados.</p>
+    </div>
+  {% endif %}
+
+{% else %}
+<div class="row" id="alert_box">
+  <div class="col s12 m12">
+    <div class="card red darken-1">
+      <div class="row">
+        <div class="col s12 m10">
+          <div class="card-content white-text">
+            <p>Erro ao listar usuários - Status Code: {{status_code}}</p>
+        </div>
+      </div>
+    </div>
+   </div>
+  </div>
+</div>
+{% endif %}
+
+<div id="modal-delete-user" class="modal">
+  <div class="modal-content">
+    <h4>ATENÇÂO!!!</h4>
+    <p>Realmente deseja deletar o usuário?</p>
+  </div>
+  <div class="modal-footer">
+    <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat" id="modal-delete-user-no">Cancelar</a>
+    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat" id="modal-delete-user-yes">Deletar</a>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block code_snippet %}
+    <script type="text/javascript" src='{{ url_for('static', filename='code-snippet-delete-user.js') }}'></script>
+{% endblock %}

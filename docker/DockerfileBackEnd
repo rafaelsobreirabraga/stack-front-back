@@ -1,0 +1,42 @@
+FROM golang:1.17.13 AS builder
+
+RUN apt update && apt upgrade -y
+RUN apt install -y ${packages}
+
+#RUN apk update && apk --update upgrade
+
+#RUN apk add --no-cache \ 
+#    ca-certificates sqlite-libs sqlite-dev sqlite gcc && \
+#    #apk add --update sqlite && \
+#    update-ca-certificates \
+#    && rm -rf /var/cache/apk/*
+
+WORKDIR /app
+
+#COPY ./backend/go.mod .
+#COPY ./backend/go.sum .
+COPY ./backend/cmd    ./cmd
+COPY ./backend/types  ./types
+
+RUN go mod init bitbucket.org/bexstech/bexs-devops-exam
+RUN go mod tidy
+
+VOLUME /sqlite
+
+RUN CGO_ENABLED=1 CC=gcc GOOS=linux go build -o service cmd/main.go
+
+ENTRYPOINT ["/app/service"]
+
+##############
+FROM golang:1.17.13 AS run
+
+COPY --from=builder /app /app
+
+VOLUME /app/sqlite
+
+#WORKDIR /app
+
+#ENTRYPOINT ["/app/service"]
+
+EXPOSE 8080
+CMD /app/service
